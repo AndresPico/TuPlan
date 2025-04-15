@@ -1,49 +1,128 @@
-document.getElementById("loginBtn").addEventListener("click", function () {
-    const btn = this;
-    btn.disabled = true;
-    const originalHTML = btn.innerHTML;
+document.addEventListener("DOMContentLoaded", () => {
+    const btnLogin = document.getElementById("btnLogin");
+    const btnRegister = document.getElementById("btnRegister");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
   
-    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Cargando...`;
+    btnLogin.addEventListener("click", () => {
+      btnLogin.classList.add("activo");
+      btnRegister.classList.remove("activo");
+      loginForm.classList.remove("oculto");
+      registerForm.classList.add("oculto");
+    });
   
-    // Simula login (reemplaza esto con tu lógica real)
-    setTimeout(() => {
-      btn.innerHTML = originalHTML;
-      btn.disabled = false;
-      // Aquí iría la redirección o validación
-    }, 2000);
+    btnRegister.addEventListener("click", () => {
+      btnRegister.classList.add("activo");
+      btnLogin.classList.remove("activo");
+      registerForm.classList.remove("oculto");
+      loginForm.classList.add("oculto");
+    });
+  
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      console.log("🔐 Iniciar sesión...");
+    });
+  
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      console.log("📝 Registro enviado...");
+    });
   });
 
-  document.getElementById("loginBtn").addEventListener("click", function () {
-    const btn = this;
-    const loader = document.getElementById("loader");
   
-    // Activamos el loader y deshabilitamos el botón
-    btn.disabled = true;
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Cargando...`;
-    
-    loader.style.display = "flex";  // Mostrar el loader
-    
-    // Simulación de proceso de login (reemplaza con tu lógica de validación)
-    setTimeout(() => {
-      loader.style.display = "none"; // Ocultar el loader cuando termine
-      btn.innerHTML = originalHTML;  // Restaurar el texto del botón
-      btn.disabled = false;
+  document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("formLogin");
   
-      // Aquí va tu redirección o lo que quieras hacer tras el login exitoso
-      // Por ejemplo: window.location.href = "dashboard.html";
-    }, 2000); // Simulamos un tiempo de carga de 2 segundos
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+  
+      const correo = document.getElementById("correoLogin").value.trim();
+      const contrasena = document.getElementById("contrasenaLogin").value.trim();
+  
+      if (!correo || !contrasena) {
+        mostrarAlerta("Por favor completa todos los campos", "error");
+        return;
+      }
+  
+      try {
+        const response = await fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ correo, contrasena })
+        });
+  
+        const data = await response.json();
+  
+        if (data.success) {
+          mostrarAlerta("Inicio de sesión exitoso", "exito");
+  
+          // Guardar token y usuario en localStorage
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("usuario", JSON.stringify(data.usuario));
+  
+          setTimeout(() => {
+            window.location.href = "simulador.html"; // Redirección
+          }, 1500);
+        } else {
+          mostrarAlerta("Correo o contraseña incorrectos", "error");
+        }
+      } catch (error) {
+        console.error("Error en el login:", error);
+        mostrarAlerta("Ocurrió un error al iniciar sesión", "error");
+      }
+    });
   });
+  
+  function mostrarAlerta(mensaje, tipo) {
+    const alerta = document.createElement("div");
+    alerta.className = `alerta ${tipo}`;
+    alerta.textContent = mensaje;
+  
+    document.body.appendChild(alerta);
+    setTimeout(() => alerta.remove(), 3000);
+  }
 
-  document.getElementById("goToRegister").addEventListener("click", function (e) {
-    e.preventDefault();
-    document.getElementById("loginForm").classList.remove("active");
-    document.getElementById("registerForm").classList.add("active");
-  });
+  document.addEventListener("DOMContentLoaded", () => {
+    const registerForm = document.getElementById("formRegister");
   
-  document.getElementById("goToLogin").addEventListener("click", function (e) {
-    e.preventDefault();
-    document.getElementById("registerForm").classList.remove("active");
-    document.getElementById("loginForm").classList.add("active");
+    registerForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+  
+      const nombre = document.getElementById("nombreRegistro").value.trim();
+      const correo = document.getElementById("correoRegistro").value.trim();
+      const contrasena = document.getElementById("contrasenaRegistro").value.trim();
+  
+      if (!nombre || !correo || !contrasena) {
+        mostrarAlerta("Completa todos los campos", "error");
+        return;
+      }
+  
+      try {
+        const response = await fetch("http://localhost:3000/api/registro", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ nombre, correo, contrasena })
+        });
+  
+        const data = await response.json();
+  
+        if (data.success) {
+          mostrarAlerta("Registro exitoso. Ya puedes iniciar sesión", "exito");
+  
+          setTimeout(() => {
+            document.getElementById("btnLogin").click(); // Cambia al formulario login
+          }, 2000);
+        } else {
+          mostrarAlerta(data.mensaje || "Hubo un error al registrar", "error");
+        }
+      } catch (error) {
+        console.error("Error en el registro:", error);
+        mostrarAlerta("Ocurrió un error al registrar", "error");
+      }
+    });
   });
   
