@@ -1,0 +1,103 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #240046, #5a189a);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.simulador-container {
+  background-color: #1b1b2f;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 900px;
+  width: 100%;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+h1, h2, h3 {
+  color: #ff6f91;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  background-color: #eeeeee;
+  color: #333;
+}
+
+button {
+  padding: 12px 20px;
+  background-color: #ff6f91;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #ff4e74;
+}
+
+.result-section {
+  margin-top: 40px;
+  background: #212529;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+#resumenAhorro {
+  margin-top: 30px;
+  background-color: #2e2e42;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 13px;
+  color: #ccc;
+  opacity: 0.7;
+}
+
+#exportarBtn {
+  margin-top: 30px;
+  width: 100%;
+}
+
+#contenidoPDF {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: 'Segoe UI', sans-serif;
+}
