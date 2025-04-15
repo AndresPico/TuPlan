@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TuPlan - Inicia sesión</title>
+  <link rel="stylesheet" href="css/login.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    
+    <!-- TÍTULO -->
+    <h1 class="titulo-app">Bienvenido a <span>TuPlan</span></h1>
+    <p class="subtitulo-app">Tu simulador de ahorro inteligente</p>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="mostrarFormulario('login')">Iniciar sesión</button>
+      <button class="tab" onclick="mostrarFormulario('register')"id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i>>Registrarse</button>
+    </div>
+
+    <!-- Formulario de Login -->
+<div id="loginForm" class="form-container">
+    <h2>Bienvenido a <span>TuPlan</span></h2>
+    <form>
+      <input type="text" id="username" placeholder="Usuario" required>
+      <input type="password" id="password" placeholder="Contraseña" required>
+      <button type="submit" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+      </button>
+      <p>No tienes cuenta? <a href="#" id="goToRegister">Regístrate</a></p>
+    </form>
+  </div>
+  
+  <!-- Formulario de Registro -->
+  <div id="registerForm" class="form-container" style="display:none;">
+    <h2>¡Únete a <span>TuPlan</span>!</h2>
+    <form>
+      <input type="text" id="newUsername" placeholder="Nombre de usuario" required>
+      <input type="email" id="newEmail" placeholder="Correo electrónico" required>
+      <input type="password" id="newPassword" placeholder="Contraseña" required>
+      <button type="submit" id="registerBtn">
+        <i class="fas fa-user-plus"></i> Registrarse
+      </button>
+      <p>¿Ya tienes cuenta? <a href="#" id="goToLogin">Inicia sesión</a></p>
+    </form>
+  </div>
+
+    <!-- FOOTER -->
+    <footer>
+      &copy; 2025 TuPlan. Todos los derechos reservados.
+    </footer>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function mostrarFormulario(formulario) {
+      document.getElementById("formLogin").classList.remove("active");
+      document.getElementById("formRegister").classList.remove("active");
+
+      const tabs = document.querySelectorAll(".tab");
+      tabs.forEach(tab => tab.classList.remove("active"));
+
+      if (formulario === "login") {
+        document.getElementById("formLogin").classList.add("active");
+        tabs[0].classList.add("active");
+      } else {
+        document.getElementById("formRegister").classList.add("active");
+        tabs[1].classList.add("active");
+      }
+    }
+  </script>
+
+    <!-- Contenedor de loader -->
+    <div id="loader" class="loader-container">
+        <div class="spinner"></div>
+    </div>
+    <script src="js/login.js"></script>
+</body>
+</html>

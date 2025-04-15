@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+
     const ingreso = parseFloat(document.getElementById("ingreso").value);
+    const meta = parseFloat(document.getElementById("meta").value);
     const gasto = parseFloat(document.getElementById("gasto").value);
     const meses = parseInt(document.getElementById("meses").value);
 
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     mostrarGrafico(datos);
     mostrarConsejo(ahorroMensual);
+    enviarSimulacionAlServidor(ingreso, meta, gasto, ahorroMensual);
   });
 
   exportarBtn.addEventListener("click", exportarPDF);
@@ -83,42 +86,87 @@ function mostrarConsejo(ahorro) {
 }
 
 function exportarPDF() {
-    const contenido = document.getElementById("contenidoPDF");
-  
-    html2canvas(contenido, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF("p", "mm", "a4");
-  
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pageWidth - 20;
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-  
-      // Estilos
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(20);
-      pdf.setTextColor(40, 40, 40);
-      pdf.text("Reporte de TuPlan", pageWidth / 2, 20, { align: "center" });
-  
-      // Fecha
-      pdf.setFontSize(10);
-      pdf.setFont("helvetica", "normal");
-      const fecha = new Date().toLocaleString();
-      pdf.text(`Fecha de generación: ${fecha}`, 20, 28);
-  
-      // Imagen del contenido (gráfico + resultado)
-      pdf.addImage(imgData, "PNG", 10, 35, pdfWidth, pdfHeight);
-  
-      // Pie de página
-      pdf.setFontSize(10);
-      pdf.setTextColor(100);
-      pdf.text("Generado automáticamente por TuPlan © 2025", 20, pageHeight - 10);
-  
-      // Guardar PDF
-      pdf.save(`TuPlan_${new Date().toLocaleDateString()}.pdf`);
+  const contenido = document.getElementById("contenidoPDF");
+
+  html2canvas(contenido, { scale: 2 }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pageWidth - 20;
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    // Encabezado
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text("Reporte de TuPlan", pageWidth / 2, 20, { align: "center" });
+
+    // Fecha
+    pdf.setFontSize(10);
+    pdf.setFont("helvetica", "normal");
+    const fecha = new Date().toLocaleString();
+    pdf.text(`Fecha de generación: ${fecha}`, 20, 28);
+
+    // Imagen del contenido
+    pdf.addImage(imgData, "PNG", 10, 35, pdfWidth, pdfHeight);
+
+    // Pie de página
+    pdf.setFontSize(10);
+    pdf.setTextColor(100);
+    pdf.text("Generado automáticamente por TuPlan © 2025", 20, pageHeight - 10);
+
+    pdf.save(`TuPlan_${new Date().toLocaleDateString()}.pdf`);
+  });
+}
+
+function enviarSimulacionAlServidor(ingreso, meta, gasto, ahorroMensual) {
+  const simulacion = {
+    id_usuario: 1, // ← luego esto será dinámico cuando implementes login
+    ingreso_mensual: ingreso,
+    meta_ahorro: meta,
+    gasto_mensual: gasto,
+    ahorro_mensual: ahorroMensual
+  };
+
+  fetch("http://localhost:3000/api/simulaciones", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(simulacion)
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log("✅ Simulación guardada:", data);
+      mostrarAlertaGuardado();
+    })
+    .catch(err => {
+      console.error("❌ Error al guardar la simulación:", err);
     });
-  }
-  
-  
+}
+
+function mostrarAlertaGuardado() {
+  Swal.fire({
+    title: '¡Guardado con éxito!',
+    text: 'Tu simulación ha sido registrada en la base de datos.',
+    icon: 'success',
+    confirmButtonColor: '#f72585',
+    confirmButtonText: 'Perfecto'
+  });
+}
+
+function obtenerSimulaciones(usuario_id) {
+  fetch(`http://localhost:3000/api/simulaciones/${usuario_id}`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Simulaciones obtenidas", data);
+      // Aquí puedes mostrar las simulaciones en el frontend
+    })
+    .catch((error) => {
+      console.error("Error al obtener las simulaciones", error);
+    });
+}
